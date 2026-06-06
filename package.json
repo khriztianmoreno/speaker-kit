@@ -1,0 +1,75 @@
+{
+  "name": "@khriztianmoreno/speaker-kit",
+  "version": "1.0.0",
+  "description": "Speaker-mode presentation kit for Next.js — sync, notes, timer, resizable panels.",
+  "license": "MIT",
+  "author": "Cristian Moreno <khriztianmoreno@gmail.com> (https://github.com/khriztianmoreno)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khriztianmoreno/speaker-kit.git"
+  },
+  "homepage": "https://github.com/khriztianmoreno/speaker-kit#readme",
+  "bugs": "https://github.com/khriztianmoreno/speaker-kit/issues",
+  "keywords": [
+    "nextjs",
+    "presentation",
+    "speaker-view",
+    "slides",
+    "supabase",
+    "react"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "release": "pnpm build && npm publish --access public"
+  },
+  "peerDependencies": {
+    "@supabase/supabase-js": ">=2",
+    "next": ">=14",
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "@supabase/supabase-js": {
+      "optional": true
+    },
+    "next": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.106.0",
+    "@types/node": "^20.17.6",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  }
+}

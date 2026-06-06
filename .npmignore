@@ -1,0 +1,11 @@
+src
+playground
+node_modules
+.git
+.github
+.vscode
+tsconfig.json
+tsup.config.ts
+*.log
+.DS_Store
+.env*
