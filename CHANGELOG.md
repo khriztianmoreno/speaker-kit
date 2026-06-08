@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 —
 
+## [1.1.0] - 2026-06-08
+
+### Changed
+
+- **`<AudienceView>`** now lets viewers navigate locally with the keyboard
+  (`←` / `→` / `↑` / `↓` / `Space`). When a speaker is connected and broadcasts
+  a `navigate` event, every audience client still snaps to the canonical index,
+  so the speaker remains in control during a live talk. This makes a single
+  `/slides` URL work both during the presentation **and** after it ends — late
+  visitors can browse the deck at their own pace instead of seeing a frozen view.
+- **`useSlideSync`** — the `audience` role's `goTo` / `goNext` / `goPrev` now
+  update local state instead of being no-ops. Broadcasting is still gated:
+  `emit` continues to drop `navigate` payloads for the audience role, so
+  audience navigation stays purely local and never leaks onto the channel.
+
+### Migration notes
+
+Backwards compatible at the API level — no prop or signature changed. If your
+app relied on the audience being completely frozen (e.g. a kiosk display),
+override the behavior by rendering `<AudienceView>` inside a wrapper that
+swallows keyboard events, or build a custom UI on top of `useSlideSync`
+with `role: "audience"` and ignore the returned `goTo` / `goNext` / `goPrev`.
+
 ## [1.0.1] - 2026-06-08
 
 ### Added
@@ -75,6 +98,7 @@ Initial public release.
     consumer Next.js app, release flow and troubleshooting.
   - MIT `LICENSE`.
 
-[Unreleased]: https://github.com/khriztianmoreno/speaker-kit/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/khriztianmoreno/speaker-kit/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/khriztianmoreno/speaker-kit/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/khriztianmoreno/speaker-kit/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/khriztianmoreno/speaker-kit/releases/tag/v1.0.0

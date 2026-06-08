@@ -178,20 +178,25 @@ export function useSlideSync(opts: UseSlideSyncOptions) {
   /**
    * Move to a specific slide index.
    *
-   * No-op for audience clients (they only follow). Speakers clamp
-   * the value to `[0, total - 1]`, update local state, and broadcast.
+   * Both roles update local state so audiences can browse the deck
+   * at their own pace when no speaker is live. Only the speaker role
+   * broadcasts the change; audience navigation stays local. When a
+   * speaker is connected and emits a `navigate` message, every audience
+   * client snaps to the canonical index — so a viewer can flip ahead
+   * during a live talk but will be pulled back to the speaker's slide
+   * on the next broadcast.
    *
    * @param next Target slide index (zero-based).
    */
   const goTo = useCallback(
     (next: number) => {
-      // Audience is follower-only — local nav is a no-op to prevent desync
-      if (role === "audience") return;
       const clamped = Math.max(0, Math.min(total - 1, next));
       setIndex(clamped);
+      // `emit` already drops `navigate` payloads for the audience role,
+      // so audience navigation stays purely local.
       emit({ type: "navigate", index: clamped });
     },
-    [total, emit, role],
+    [total, emit],
   );
 
   /** Advance to the next slide (no-op past the end). */

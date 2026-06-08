@@ -68,7 +68,7 @@ export function AudienceView({
   hideProgress = false,
 }: AudienceViewProps) {
   const total = slides.length;
-  const { index } = useSlideSync({
+  const { index, goNext, goPrev } = useSlideSync({
     total,
     channel,
     role: "audience",
@@ -76,16 +76,30 @@ export function AudienceView({
   });
 
   useEffect(() => {
-    if (!openSpeakerOn) return;
     /**
-     * Opens the speaker view in a popup window when the configured
-     * shortcut is pressed (case-insensitive). Skipped while the user
-     * is focused on a form field so we don't hijack typing.
+     * Audience keyboard handler.
+     *
+     * - Arrow keys / space let viewers browse the deck at their own
+     *   pace when no speaker is broadcasting. If a speaker emits a
+     *   navigate event, every audience client snaps to that index.
+     * - The configurable `openSpeakerOn` shortcut opens the speaker
+     *   view in a popup (useful from the projector laptop).
+     *
+     * Form fields are skipped so we don't hijack typing.
      */
     const handleKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement | null)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
-      if (e.key.toLowerCase() === openSpeakerOn.toLowerCase()) {
+      if (["ArrowRight", "ArrowDown", " "].includes(e.key)) {
+        e.preventDefault();
+        goNext();
+      } else if (["ArrowLeft", "ArrowUp"].includes(e.key)) {
+        e.preventDefault();
+        goPrev();
+      } else if (
+        openSpeakerOn &&
+        e.key.toLowerCase() === openSpeakerOn.toLowerCase()
+      ) {
         e.preventDefault();
         window.open(
           speakerHref,
@@ -96,7 +110,7 @@ export function AudienceView({
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [openSpeakerOn, speakerHref]);
+  }, [goNext, goPrev, openSpeakerOn, speakerHref]);
 
   const Current = slides[index]?.Component;
   if (!Current) return null;

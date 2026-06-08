@@ -34,10 +34,9 @@ describe("useElapsed", () => {
   });
 
   it("returns 0 when startedAt is reset to null", () => {
-    const startedAt = Date.now();
     const { result, rerender } = renderHook(
       ({ s }: { s: number | null }) => useElapsed(s),
-      { initialProps: { s: startedAt } },
+      { initialProps: { s: Date.now() as number | null } },
     );
     rerender({ s: null });
     expect(result.current).toBe(0);
@@ -45,10 +44,9 @@ describe("useElapsed", () => {
 
   it("clears the interval when startedAt becomes null", () => {
     const clearSpy = vi.spyOn(global, "clearInterval");
-    const startedAt = Date.now();
     const { rerender } = renderHook(
       ({ s }: { s: number | null }) => useElapsed(s),
-      { initialProps: { s: startedAt } },
+      { initialProps: { s: Date.now() as number | null } },
     );
     rerender({ s: null });
     expect(clearSpy).toHaveBeenCalled();

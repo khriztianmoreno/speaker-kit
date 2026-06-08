@@ -1,6 +1,6 @@
 {
   "name": "@khriztianmoreno/speaker-kit",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Speaker-mode presentation kit for Next.js — sync, notes, timer, resizable panels.",
   "license": "MIT",
   "author": "Cristian Moreno <khriztianmoreno@gmail.com> (https://github.com/khriztianmoreno)",

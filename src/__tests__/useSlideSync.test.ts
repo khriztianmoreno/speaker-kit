@@ -151,7 +151,7 @@ describe("useSlideSync", () => {
     expect(navMsgs.at(-1)).toMatchObject({ type: "navigate", index: 2 });
   });
 
-  it("audience role ignores goTo (follower-only)", () => {
+  it("audience role updates index locally but does not broadcast", () => {
     const mock = makeMockTransport();
     const { result } = renderHook(() =>
       useSlideSync({
@@ -164,7 +164,9 @@ describe("useSlideSync", () => {
     act(() => {
       result.current.goTo(3);
     });
-    expect(result.current.index).toBe(0);
+    expect(result.current.index).toBe(3);
+    const navMsgs = mock.sent.filter((m) => m.type === "navigate");
+    expect(navMsgs).toHaveLength(0);
   });
 
   it("incoming navigate message updates the index", async () => {
