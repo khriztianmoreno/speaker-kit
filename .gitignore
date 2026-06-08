@@ -5,6 +5,8 @@ dist
 .next
 playground/.next
 playground/node_modules
+landing/.next
+landing/node_modules
 .env
 .env.local
 .tsbuildinfo
