@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/khriztianmoreno/speaker-kit/main/assets/logo.png" alt="speaker-kit logo" width="220" />
+<img src="https://github.com/khriztianmoreno/speaker-kit/blob/main/assets/logo.png?raw=true" alt="speaker-kit logo" width="220" />
 
 # @khriztianmoreno/speaker-kit
 
