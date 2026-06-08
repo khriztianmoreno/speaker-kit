@@ -1,6 +1,36 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/khriztianmoreno/speaker-kit/main/assets/logo.png" alt="speaker-kit logo" width="220" />
+
 # @khriztianmoreno/speaker-kit
 
-Speaker-mode presentation kit for Next.js. Drop-in **speaker view** (notes, timer, upcoming preview, resizable panels) and **audience view** (follower-only), synced across browsers and devices via Supabase Realtime + BroadcastChannel.
+**Speaker-mode presentation kit for Next.js.**
+Drop-in **speaker view** (notes, timer, upcoming preview, resizable panels) and **audience view** (follower-only), synced across browsers and devices via Supabase Realtime + BroadcastChannel.
+
+[![npm version](https://img.shields.io/npm/v/@khriztianmoreno/speaker-kit?color=22d3ee&label=npm&style=flat-square)](https://www.npmjs.com/package/@khriztianmoreno/speaker-kit)
+[![npm downloads](https://img.shields.io/npm/dm/@khriztianmoreno/speaker-kit?color=ff7849&style=flat-square)](https://www.npmjs.com/package/@khriztianmoreno/speaker-kit)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@khriztianmoreno/speaker-kit?color=22d3ee&label=minzip&style=flat-square)](https://bundlephobia.com/package/@khriztianmoreno/speaker-kit)
+[![types](https://img.shields.io/npm/types/@khriztianmoreno/speaker-kit?style=flat-square&color=ff7849)](https://www.npmjs.com/package/@khriztianmoreno/speaker-kit)
+[![license](https://img.shields.io/npm/l/@khriztianmoreno/speaker-kit?color=8a8aa0&style=flat-square)](./LICENSE)
+
+[**Install**](#install) · [**Quick start**](#quick-start) · [**API**](#api) · [**Theming**](#theming) · [**How it works**](#how-it-works) · [**FAQ**](#faq) · [**Development**](./DEVELOPMENT.md)
+
+</div>
+
+---
+
+## Why speaker-kit?
+
+> Most "slide" libraries make you adopt a whole framework. **speaker-kit** is the opposite — your slides stay as plain React components, and you drop in two views (`SpeakerView` + `AudienceView`) that stay in sync.
+
+- **Real speaker mode** — current slide, upcoming preview, markdown notes, elapsed + wall clock timers, resizable panels (persisted to `localStorage`).
+- **Follower-only audience** — anyone with the URL sees what you're showing; nobody can hijack the deck.
+- **Two-tier sync** — `BroadcastChannel` for same-browser tabs (<5ms) and Supabase Realtime for cross-device (~80–200ms). Both run together.
+- **Pluggable transports** — Pusher, Ably, SSE, your own WebSocket? Implement a 4-method interface and swap it in.
+- **No CSS framework required** — ships its own stylesheet with CSS variable theming. Tailwind-friendly but not Tailwind-dependent.
+- **TypeScript-first** — full `.d.ts` with rich JSDoc on every public API.
+
+## Install
 
 ```bash
 pnpm add @khriztianmoreno/speaker-kit
@@ -11,6 +41,8 @@ pnpm add @supabase/supabase-js
 ```ts
 import "@khriztianmoreno/speaker-kit/styles.css";
 ```
+
+> **Heads-up:** `react`, `react-dom` and `next` are peer dependencies. `@supabase/supabase-js` is an **optional** peer — omit it and you'll still get same-browser sync via `BroadcastChannel`.
 
 ## Quick start
 
@@ -91,7 +123,8 @@ Open `/slides/speaker` on your laptop. Arrow keys / space advance. The audience 
 
 ## Patterns for notes
 
-### A. Inline strings (zero config)
+<details>
+<summary><b>A. Inline strings (zero config)</b></summary>
 
 Best for one-off talks. Keep everything in one file:
 
@@ -106,7 +139,10 @@ export const NOTES = {
 };
 ```
 
-### B. `.md` imports (one rule in `next.config.js`)
+</details>
+
+<details>
+<summary><b>B. <code>.md</code> imports (one rule in <code>next.config.js</code>)</b></summary>
 
 If you want notes in their own `.md` files:
 
@@ -140,6 +176,8 @@ declare module "*.md" {
   export default content;
 }
 ```
+
+</details>
 
 ## API
 
@@ -216,7 +254,8 @@ All colors live in CSS variables. Override in your own stylesheet **after** impo
 }
 ```
 
-Available variables:
+<details>
+<summary><b>Available CSS variables</b></summary>
 
 | Variable | Default | Purpose |
 |---|---|---|
@@ -234,6 +273,8 @@ Available variables:
 | `--sk-radius` | `16px` | Panel border radius |
 | `--sk-font-mono` / `--sk-font-sans` | system | Typography |
 
+</details>
+
 ## How it works
 
 - **Same browser** sync uses `BroadcastChannel` (instant, no network).
@@ -242,18 +283,62 @@ Available variables:
 - **Roles:** the `speaker` view emits navigation events and responds to `request-state`. The `audience` view only listens. Result: anyone with the URL follows along but cannot drive the deck.
 - **Late join:** when an audience joins, it broadcasts `request-state`. Only a speaker replies, so the new tab snaps to the current slide.
 
+```
+┌──────────────┐   navigate    ┌──────────────────┐   navigate   ┌──────────────┐
+│  SpeakerView │ ────────────► │  BroadcastChannel│ ───────────► │ AudienceView │
+│  (driver)    │               │  (same browser)  │              │  (followers) │
+│              │               └──────────────────┘              │              │
+│              │   navigate    ┌──────────────────┐   navigate   │              │
+│              │ ────────────► │ Supabase Realtime│ ───────────► │              │
+│              │               │  (cross device)  │              │              │
+└──────────────┘               └──────────────────┘              └──────────────┘
+```
+
 ## FAQ
 
-**Do I need Supabase?** Only for cross-device sync. Same-browser (multiple windows on the same machine) works without it via BroadcastChannel.
+<details>
+<summary><b>Do I need Supabase?</b></summary>
 
-**Can I use Pusher / Ably / WebSocket instead?** Yes — implement the `Transport` interface and pass it via the `transports` factory in `useSlideSync`.
+Only for cross-device sync. Same-browser (multiple windows on the same machine) works without it via BroadcastChannel.
 
-**Can I use this without Tailwind?** Yes. The package ships its own stylesheet (`speaker-kit.css`) using CSS variables. No Tailwind anywhere.
+</details>
 
-**Multiple presentations at once?** Use different `channel` slugs. Each is an isolated pubsub channel.
+<details>
+<summary><b>Can I use Pusher / Ably / WebSocket instead?</b></summary>
 
-**Footgun:** if you run `pnpm dev` locally **and** your prod URL is open at the same time with the same `channel`, you'll drive prod from localhost. Either use a different `channel` value in `.env.local`, or close prod while you develop.
+Yes — implement the `Transport` interface and pass it via the `transports` factory in `useSlideSync`.
+
+</details>
+
+<details>
+<summary><b>Can I use this without Tailwind?</b></summary>
+
+Yes. The package ships its own stylesheet (`speaker-kit.css`) using CSS variables. No Tailwind anywhere.
+
+</details>
+
+<details>
+<summary><b>Multiple presentations at once?</b></summary>
+
+Use different `channel` slugs. Each is an isolated pubsub channel.
+
+</details>
+
+<details>
+<summary><b>Footgun: driving prod from localhost</b></summary>
+
+If you run `pnpm dev` locally **and** your prod URL is open at the same time with the same `channel`, you'll drive prod from localhost. Either use a different `channel` value in `.env.local`, or close prod while you develop.
+
+</details>
+
+## Contributing
+
+Want to hack on speaker-kit itself? The [DEVELOPMENT.md](./DEVELOPMENT.md) guide covers cloning, local dev with `tsup --watch`, linking against a Next.js app, releases and troubleshooting.
 
 ## License
 
 MIT © [Cristian Moreno](https://github.com/khriztianmoreno)
+
+<div align="center">
+<sub>Built with care for speakers who want speaker mode <i>without</i> giving up React.</sub>
+</div>
