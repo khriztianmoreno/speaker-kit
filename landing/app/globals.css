@@ -294,6 +294,11 @@ nav {
   margin: 0 auto;
 }
 
+@media (max-width: 768px) {
+  /* Keep the mobile header clean: show only the logo + npm button. */
+  .nav-links a:not(.btn) { display: none; }
+}
+
 @media (max-width: 540px) {
   .demo-cards { grid-template-columns: 1fr; }
 }

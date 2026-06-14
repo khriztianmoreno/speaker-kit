@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 —
 
+## [1.1.1] - 2026-06-14
+
+### Fixed
+
+- **`<SpeakerView>`** mobile layout. On phones (`≤768px`) the view now
+  collapses to a compact header (elapsed / wall-clock timers + navigation
+  controls) pinned at the top, with the speaker notes filling the rest of
+  the screen. The slide previews and the resizable splitter — which were
+  cramped and unusable on small screens — are hidden, and the slide title is
+  dropped to keep the header from overflowing.
+
 ## [1.1.0] - 2026-06-08
 
 ### Changed

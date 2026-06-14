@@ -426,3 +426,63 @@
   font-size: 13px;
 }
 .sk-prose th { background: var(--sk-panel-2); color: var(--sk-text); font-weight: 700; }
+
+/* ── Mobile speaker layout ───────────────────────────────────────
+ * On phones the slide previews aren't useful. Collapse the view to:
+ * a compact header (elapsed/wall-clock + nav controls) pinned at the
+ * top, and the speaker notes filling the rest of the screen.
+ * ──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .sk-root {
+    padding: 8px;
+    height: 100dvh;
+  }
+
+  /* Header: stack the meta row above the timer/nav row. */
+  .sk-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+  }
+
+  .sk-header__left,
+  .sk-header__right {
+    width: 100%;
+    gap: 12px;
+  }
+
+  /* Timers on the left, nav controls pushed to the right. */
+  .sk-header__right {
+    justify-content: flex-start;
+  }
+
+  .sk-header__divider {
+    margin-left: auto;
+    padding-left: 16px;
+  }
+
+  /* The slide title would overflow the narrow header — drop it. */
+  .sk-title {
+    display: none;
+  }
+
+  /* Slightly smaller timers so a full HH:mm:ss fits next to the clock. */
+  .sk-time__value {
+    font-size: 20px;
+  }
+
+  /* Hide the slide previews + the vertical splitter; notes only. */
+  .sk-left-col,
+  .sk-main > .sk-splitter--v {
+    display: none;
+  }
+
+  .sk-notes {
+    width: 100% !important;
+    flex: 1;
+    padding: 16px;
+  }
+}
